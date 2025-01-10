@@ -21,7 +21,7 @@ CREATE TABLE movies (
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Movie Cache Log (optional for tracking fetch timestamps)
+-- Movie Cache Log
 CREATE TABLE movie_cache_log (
     tmdb_id INT NOT NULL UNIQUE,
     last_fetched TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -51,7 +51,7 @@ CREATE TABLE people (
     deathday DATE,
     gender SMALLINT,
     profile_path VARCHAR(255),
-    popularity DECIMAL(10, 2)
+    tmdb_popularity DECIMAL(10, 2)
 );
 
 -- Movie People Junction Table
@@ -97,11 +97,15 @@ CREATE TABLE movie_availability (
 
 -- User Movies (e.g., watchlist or favorites)
 CREATE TABLE user_movies (
-    user_movie_id SERIAL PRIMARY KEY,
     user_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-    tmdb_id INT NOT NULL,
-    status VARCHAR(50), -- e.g., "watchlist", "watched", "favorite"
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    movie_id INT NOT NULL REFERENCES movies(movie_id) ON DELETE CASCADE,
+    rating DECIMAL(4, 2),
+    review TEXT,
+    watchlist BOOLEAN DEFAULT FALSE,
+    watched BOOLEAN DEFAULT FALSE,
+    favorited BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, movie_id)
 );
 
 -- Indexes

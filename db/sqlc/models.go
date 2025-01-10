@@ -66,7 +66,7 @@ type People struct {
 	Deathday           pgtype.Date    `json:"deathday"`
 	Gender             pgtype.Int2    `json:"gender"`
 	ProfilePath        pgtype.Text    `json:"profile_path"`
-	Popularity         pgtype.Numeric `json:"popularity"`
+	TmdbPopularity     pgtype.Numeric `json:"tmdb_popularity"`
 }
 
 type Ratings struct {
@@ -84,11 +84,14 @@ type StreamingServices struct {
 }
 
 type UserMovies struct {
-	UserMovieID int32            `json:"user_movie_id"`
-	UserID      int32            `json:"user_id"`
-	TmdbID      int32            `json:"tmdb_id"`
-	Status      pgtype.Text      `json:"status"`
-	CreatedAt   pgtype.Timestamp `json:"created_at"`
+	UserID    int32            `json:"user_id"`
+	MovieID   int32            `json:"movie_id"`
+	Rating    pgtype.Numeric   `json:"rating"`
+	Review    pgtype.Text      `json:"review"`
+	Watchlist pgtype.Bool      `json:"watchlist"`
+	Watched   pgtype.Bool      `json:"watched"`
+	Favorited pgtype.Bool      `json:"favorited"`
+	CreatedAt pgtype.Timestamp `json:"created_at"`
 }
 
 type Users struct {
