@@ -1,5 +1,4 @@
 -- Drop Indexes
-DROP INDEX IF EXISTS idx_users_username;
 DROP INDEX IF EXISTS idx_movies_title;
 DROP INDEX IF EXISTS idx_movie_genres_movie_id;
 DROP INDEX IF EXISTS idx_movie_genres_genre_id;

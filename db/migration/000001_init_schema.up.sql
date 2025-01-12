@@ -1,7 +1,7 @@
 -- Users Table
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(100),
     email VARCHAR(100) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -51,7 +51,8 @@ CREATE TABLE people (
     deathday DATE,
     gender SMALLINT,
     profile_path VARCHAR(255),
-    tmdb_popularity DECIMAL(10, 2)
+    tmdb_popularity DECIMAL(10, 2),
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Movie People Junction Table
@@ -109,7 +110,6 @@ CREATE TABLE user_movies (
 );
 
 -- Indexes
-CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_movies_title ON movies(title);
 CREATE INDEX idx_movie_genres_movie_id ON movie_genres(movie_id);
 CREATE INDEX idx_movie_genres_genre_id ON movie_genres(genre_id);

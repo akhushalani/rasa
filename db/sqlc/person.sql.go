@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5/pgtype"
+	decimal "github.com/shopspring/decimal"
 )
 
 const createPerson = `-- name: CreatePerson :one
@@ -25,19 +26,19 @@ INSERT INTO people (
 ) VALUES (
     $1, $2, $3, $4, $5, $6, $7, $8, $9
 )
-RETURNING person_id, tmdb_id, name, known_for_department, biography, birthday, deathday, gender, profile_path, tmdb_popularity
+RETURNING person_id, tmdb_id, name, known_for_department, biography, birthday, deathday, gender, profile_path, tmdb_popularity, last_updated
 `
 
 type CreatePersonParams struct {
-	TmdbID             int32          `json:"tmdb_id"`
-	Name               string         `json:"name"`
-	KnownForDepartment pgtype.Text    `json:"known_for_department"`
-	Biography          pgtype.Text    `json:"biography"`
-	Birthday           pgtype.Date    `json:"birthday"`
-	Deathday           pgtype.Date    `json:"deathday"`
-	Gender             pgtype.Int2    `json:"gender"`
-	ProfilePath        pgtype.Text    `json:"profile_path"`
-	TmdbPopularity     pgtype.Numeric `json:"tmdb_popularity"`
+	TmdbID             int32           `json:"tmdb_id"`
+	Name               string          `json:"name"`
+	KnownForDepartment pgtype.Text     `json:"known_for_department"`
+	Biography          pgtype.Text     `json:"biography"`
+	Birthday           pgtype.Date     `json:"birthday"`
+	Deathday           pgtype.Date     `json:"deathday"`
+	Gender             pgtype.Int2     `json:"gender"`
+	ProfilePath        pgtype.Text     `json:"profile_path"`
+	TmdbPopularity     decimal.Decimal `json:"tmdb_popularity"`
 }
 
 func (q *Queries) CreatePerson(ctx context.Context, arg CreatePersonParams) (People, error) {
@@ -64,6 +65,7 @@ func (q *Queries) CreatePerson(ctx context.Context, arg CreatePersonParams) (Peo
 		&i.Gender,
 		&i.ProfilePath,
 		&i.TmdbPopularity,
+		&i.LastUpdated,
 	)
 	return i, err
 }
@@ -79,7 +81,7 @@ func (q *Queries) DeletePerson(ctx context.Context, personID int32) error {
 }
 
 const getPerson = `-- name: GetPerson :one
-SELECT person_id, tmdb_id, name, known_for_department, biography, birthday, deathday, gender, profile_path, tmdb_popularity FROM people
+SELECT person_id, tmdb_id, name, known_for_department, biography, birthday, deathday, gender, profile_path, tmdb_popularity, last_updated FROM people
 WHERE person_id = $1 LIMIT 1
 `
 
@@ -97,6 +99,7 @@ func (q *Queries) GetPerson(ctx context.Context, personID int32) (People, error)
 		&i.Gender,
 		&i.ProfilePath,
 		&i.TmdbPopularity,
+		&i.LastUpdated,
 	)
 	return i, err
 }
@@ -115,20 +118,20 @@ SET
     tmdb_popularity = COALESCE($10, tmdb_popularity),
     last_updated = CURRENT_TIMESTAMP
 WHERE person_id = $1
-RETURNING person_id, tmdb_id, name, known_for_department, biography, birthday, deathday, gender, profile_path, tmdb_popularity
+RETURNING person_id, tmdb_id, name, known_for_department, biography, birthday, deathday, gender, profile_path, tmdb_popularity, last_updated
 `
 
 type UpdatePersonParams struct {
-	PersonID           int32          `json:"person_id"`
-	TmdbID             int32          `json:"tmdb_id"`
-	Name               string         `json:"name"`
-	KnownForDepartment pgtype.Text    `json:"known_for_department"`
-	Biography          pgtype.Text    `json:"biography"`
-	Birthday           pgtype.Date    `json:"birthday"`
-	Deathday           pgtype.Date    `json:"deathday"`
-	Gender             pgtype.Int2    `json:"gender"`
-	ProfilePath        pgtype.Text    `json:"profile_path"`
-	TmdbPopularity     pgtype.Numeric `json:"tmdb_popularity"`
+	PersonID           int32           `json:"person_id"`
+	TmdbID             int32           `json:"tmdb_id"`
+	Name               string          `json:"name"`
+	KnownForDepartment pgtype.Text     `json:"known_for_department"`
+	Biography          pgtype.Text     `json:"biography"`
+	Birthday           pgtype.Date     `json:"birthday"`
+	Deathday           pgtype.Date     `json:"deathday"`
+	Gender             pgtype.Int2     `json:"gender"`
+	ProfilePath        pgtype.Text     `json:"profile_path"`
+	TmdbPopularity     decimal.Decimal `json:"tmdb_popularity"`
 }
 
 func (q *Queries) UpdatePerson(ctx context.Context, arg UpdatePersonParams) (People, error) {
@@ -156,6 +159,7 @@ func (q *Queries) UpdatePerson(ctx context.Context, arg UpdatePersonParams) (Peo
 		&i.Gender,
 		&i.ProfilePath,
 		&i.TmdbPopularity,
+		&i.LastUpdated,
 	)
 	return i, err
 }

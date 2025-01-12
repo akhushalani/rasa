@@ -1,36 +1,27 @@
--- name: CreateUser :exec
+-- name: CreateUser :one
 INSERT INTO users (
-    username,
+    name,
     email,
     password_hash
 ) VALUES (
     $1, $2, $3
-);
+)
+RETURNING *;
 
--- name: GetUserByID :one
+-- name: GetUser :one
 SELECT 
     user_id, 
-    username, 
+    name, 
     email, 
     password_hash, 
     created_at 
 FROM users 
 WHERE user_id = $1;
 
--- name: GetUserByUsername :one
-SELECT 
-    user_id, 
-    username, 
-    email, 
-    password_hash, 
-    created_at 
-FROM users 
-WHERE username = $1;
-
 -- name: UpdateUser :exec
 UPDATE users
 SET 
-    username = COALESCE($2, username),
+    name = COALESCE($2, name),
     email = COALESCE($3, email),
     password_hash = COALESCE($4, password_hash)
 WHERE user_id = $1;

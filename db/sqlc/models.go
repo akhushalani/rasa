@@ -6,6 +6,7 @@ package db
 
 import (
 	"github.com/jackc/pgx/v5/pgtype"
+	decimal "github.com/shopspring/decimal"
 )
 
 type Comparisons struct {
@@ -52,28 +53,29 @@ type Movies struct {
 	ReleaseDate    pgtype.Date      `json:"release_date"`
 	PosterPath     pgtype.Text      `json:"poster_path"`
 	BackdropPath   pgtype.Text      `json:"backdrop_path"`
-	TmdbPopularity pgtype.Numeric   `json:"tmdb_popularity"`
+	TmdbPopularity decimal.Decimal  `json:"tmdb_popularity"`
 	LastUpdated    pgtype.Timestamp `json:"last_updated"`
 }
 
 type People struct {
-	PersonID           int32          `json:"person_id"`
-	TmdbID             int32          `json:"tmdb_id"`
-	Name               string         `json:"name"`
-	KnownForDepartment pgtype.Text    `json:"known_for_department"`
-	Biography          pgtype.Text    `json:"biography"`
-	Birthday           pgtype.Date    `json:"birthday"`
-	Deathday           pgtype.Date    `json:"deathday"`
-	Gender             pgtype.Int2    `json:"gender"`
-	ProfilePath        pgtype.Text    `json:"profile_path"`
-	TmdbPopularity     pgtype.Numeric `json:"tmdb_popularity"`
+	PersonID           int32            `json:"person_id"`
+	TmdbID             int32            `json:"tmdb_id"`
+	Name               string           `json:"name"`
+	KnownForDepartment pgtype.Text      `json:"known_for_department"`
+	Biography          pgtype.Text      `json:"biography"`
+	Birthday           pgtype.Date      `json:"birthday"`
+	Deathday           pgtype.Date      `json:"deathday"`
+	Gender             pgtype.Int2      `json:"gender"`
+	ProfilePath        pgtype.Text      `json:"profile_path"`
+	TmdbPopularity     decimal.Decimal  `json:"tmdb_popularity"`
+	LastUpdated        pgtype.Timestamp `json:"last_updated"`
 }
 
 type Ratings struct {
 	RatingID    int32            `json:"rating_id"`
 	UserID      int32            `json:"user_id"`
 	MovieID     int32            `json:"movie_id"`
-	RatingScore pgtype.Numeric   `json:"rating_score"`
+	RatingScore decimal.Decimal  `json:"rating_score"`
 	LastUpdated pgtype.Timestamp `json:"last_updated"`
 }
 
@@ -86,7 +88,7 @@ type StreamingServices struct {
 type UserMovies struct {
 	UserID    int32            `json:"user_id"`
 	MovieID   int32            `json:"movie_id"`
-	Rating    pgtype.Numeric   `json:"rating"`
+	Rating    decimal.Decimal  `json:"rating"`
 	Review    pgtype.Text      `json:"review"`
 	Watchlist pgtype.Bool      `json:"watchlist"`
 	Watched   pgtype.Bool      `json:"watched"`
@@ -96,7 +98,7 @@ type UserMovies struct {
 
 type Users struct {
 	UserID       int32            `json:"user_id"`
-	Username     string           `json:"username"`
+	Name         pgtype.Text      `json:"name"`
 	Email        string           `json:"email"`
 	PasswordHash string           `json:"password_hash"`
 	CreatedAt    pgtype.Timestamp `json:"created_at"`

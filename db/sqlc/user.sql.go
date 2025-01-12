@@ -7,27 +7,38 @@ package db
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const createUser = `-- name: CreateUser :exec
+const createUser = `-- name: CreateUser :one
 INSERT INTO users (
-    username,
+    name,
     email,
     password_hash
 ) VALUES (
     $1, $2, $3
 )
+RETURNING user_id, name, email, password_hash, created_at
 `
 
 type CreateUserParams struct {
-	Username     string `json:"username"`
-	Email        string `json:"email"`
-	PasswordHash string `json:"password_hash"`
+	Name         pgtype.Text `json:"name"`
+	Email        string      `json:"email"`
+	PasswordHash string      `json:"password_hash"`
 }
 
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
-	_, err := q.db.Exec(ctx, createUser, arg.Username, arg.Email, arg.PasswordHash)
-	return err
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (Users, error) {
+	row := q.db.QueryRow(ctx, createUser, arg.Name, arg.Email, arg.PasswordHash)
+	var i Users
+	err := row.Scan(
+		&i.UserID,
+		&i.Name,
+		&i.Email,
+		&i.PasswordHash,
+		&i.CreatedAt,
+	)
+	return i, err
 }
 
 const deleteUser = `-- name: DeleteUser :exec
@@ -40,10 +51,10 @@ func (q *Queries) DeleteUser(ctx context.Context, userID int32) error {
 	return err
 }
 
-const getUserByID = `-- name: GetUserByID :one
+const getUser = `-- name: GetUser :one
 SELECT 
     user_id, 
-    username, 
+    name, 
     email, 
     password_hash, 
     created_at 
@@ -51,36 +62,12 @@ FROM users
 WHERE user_id = $1
 `
 
-func (q *Queries) GetUserByID(ctx context.Context, userID int32) (Users, error) {
-	row := q.db.QueryRow(ctx, getUserByID, userID)
+func (q *Queries) GetUser(ctx context.Context, userID int32) (Users, error) {
+	row := q.db.QueryRow(ctx, getUser, userID)
 	var i Users
 	err := row.Scan(
 		&i.UserID,
-		&i.Username,
-		&i.Email,
-		&i.PasswordHash,
-		&i.CreatedAt,
-	)
-	return i, err
-}
-
-const getUserByUsername = `-- name: GetUserByUsername :one
-SELECT 
-    user_id, 
-    username, 
-    email, 
-    password_hash, 
-    created_at 
-FROM users 
-WHERE username = $1
-`
-
-func (q *Queries) GetUserByUsername(ctx context.Context, username string) (Users, error) {
-	row := q.db.QueryRow(ctx, getUserByUsername, username)
-	var i Users
-	err := row.Scan(
-		&i.UserID,
-		&i.Username,
+		&i.Name,
 		&i.Email,
 		&i.PasswordHash,
 		&i.CreatedAt,
@@ -91,23 +78,23 @@ func (q *Queries) GetUserByUsername(ctx context.Context, username string) (Users
 const updateUser = `-- name: UpdateUser :exec
 UPDATE users
 SET 
-    username = COALESCE($2, username),
+    name = COALESCE($2, name),
     email = COALESCE($3, email),
     password_hash = COALESCE($4, password_hash)
 WHERE user_id = $1
 `
 
 type UpdateUserParams struct {
-	UserID       int32  `json:"user_id"`
-	Username     string `json:"username"`
-	Email        string `json:"email"`
-	PasswordHash string `json:"password_hash"`
+	UserID       int32       `json:"user_id"`
+	Name         pgtype.Text `json:"name"`
+	Email        string      `json:"email"`
+	PasswordHash string      `json:"password_hash"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
 	_, err := q.db.Exec(ctx, updateUser,
 		arg.UserID,
-		arg.Username,
+		arg.Name,
 		arg.Email,
 		arg.PasswordHash,
 	)

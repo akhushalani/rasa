@@ -8,7 +8,7 @@ package db
 import (
 	"context"
 
-	"github.com/jackc/pgx/v5/pgtype"
+	decimal "github.com/shopspring/decimal"
 )
 
 const createRating = `-- name: CreateRating :one
@@ -21,9 +21,9 @@ RETURNING rating_id, user_id, movie_id, rating_score, last_updated
 `
 
 type CreateRatingParams struct {
-	MovieID     int32          `json:"movie_id"`
-	UserID      int32          `json:"user_id"`
-	RatingScore pgtype.Numeric `json:"rating_score"`
+	MovieID     int32           `json:"movie_id"`
+	UserID      int32           `json:"user_id"`
+	RatingScore decimal.Decimal `json:"rating_score"`
 }
 
 func (q *Queries) CreateRating(ctx context.Context, arg CreateRatingParams) (Ratings, error) {
@@ -88,9 +88,9 @@ RETURNING rating_id, user_id, movie_id, rating_score, last_updated
 `
 
 type UpdateRatingParams struct {
-	MovieID     int32          `json:"movie_id"`
-	UserID      int32          `json:"user_id"`
-	RatingScore pgtype.Numeric `json:"rating_score"`
+	MovieID     int32           `json:"movie_id"`
+	UserID      int32           `json:"user_id"`
+	RatingScore decimal.Decimal `json:"rating_score"`
 }
 
 func (q *Queries) UpdateRating(ctx context.Context, arg UpdateRatingParams) (Ratings, error) {

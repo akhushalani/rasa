@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5/pgtype"
+	decimal "github.com/shopspring/decimal"
 )
 
 const createUserMovie = `-- name: CreateUserMovie :one
@@ -21,13 +22,13 @@ RETURNING user_id, movie_id, rating, review, watchlist, watched, favorited, crea
 `
 
 type CreateUserMovieParams struct {
-	UserID    int32          `json:"user_id"`
-	MovieID   int32          `json:"movie_id"`
-	Rating    pgtype.Numeric `json:"rating"`
-	Review    pgtype.Text    `json:"review"`
-	Watchlist pgtype.Bool    `json:"watchlist"`
-	Watched   pgtype.Bool    `json:"watched"`
-	Favorited pgtype.Bool    `json:"favorited"`
+	UserID    int32           `json:"user_id"`
+	MovieID   int32           `json:"movie_id"`
+	Rating    decimal.Decimal `json:"rating"`
+	Review    pgtype.Text     `json:"review"`
+	Watchlist pgtype.Bool     `json:"watchlist"`
+	Watched   pgtype.Bool     `json:"watched"`
+	Favorited pgtype.Bool     `json:"favorited"`
 }
 
 func (q *Queries) CreateUserMovie(ctx context.Context, arg CreateUserMovieParams) (UserMovies, error) {
@@ -137,13 +138,13 @@ RETURNING user_id, movie_id, rating, review, watchlist, watched, favorited, crea
 `
 
 type UpdateUserMovieParams struct {
-	UserID    int32          `json:"user_id"`
-	MovieID   int32          `json:"movie_id"`
-	Rating    pgtype.Numeric `json:"rating"`
-	Review    pgtype.Text    `json:"review"`
-	Watchlist pgtype.Bool    `json:"watchlist"`
-	Watched   pgtype.Bool    `json:"watched"`
-	Favorited pgtype.Bool    `json:"favorited"`
+	UserID    int32           `json:"user_id"`
+	MovieID   int32           `json:"movie_id"`
+	Rating    decimal.Decimal `json:"rating"`
+	Review    pgtype.Text     `json:"review"`
+	Watchlist pgtype.Bool     `json:"watchlist"`
+	Watched   pgtype.Bool     `json:"watched"`
+	Favorited pgtype.Bool     `json:"favorited"`
 }
 
 func (q *Queries) UpdateUserMovie(ctx context.Context, arg UpdateUserMovieParams) (UserMovies, error) {

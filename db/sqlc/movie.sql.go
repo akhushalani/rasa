@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/jackc/pgx/v5/pgtype"
+	decimal "github.com/shopspring/decimal"
 )
 
 const createMovie = `-- name: CreateMovie :one
@@ -21,14 +22,14 @@ RETURNING movie_id, tmdb_id, imdb_id, title, overview, release_date, poster_path
 `
 
 type CreateMovieParams struct {
-	TmdbID         int32          `json:"tmdb_id"`
-	ImdbID         pgtype.Text    `json:"imdb_id"`
-	Title          string         `json:"title"`
-	Overview       pgtype.Text    `json:"overview"`
-	ReleaseDate    pgtype.Date    `json:"release_date"`
-	PosterPath     pgtype.Text    `json:"poster_path"`
-	BackdropPath   pgtype.Text    `json:"backdrop_path"`
-	TmdbPopularity pgtype.Numeric `json:"tmdb_popularity"`
+	TmdbID         int32           `json:"tmdb_id"`
+	ImdbID         pgtype.Text     `json:"imdb_id"`
+	Title          string          `json:"title"`
+	Overview       pgtype.Text     `json:"overview"`
+	ReleaseDate    pgtype.Date     `json:"release_date"`
+	PosterPath     pgtype.Text     `json:"poster_path"`
+	BackdropPath   pgtype.Text     `json:"backdrop_path"`
+	TmdbPopularity decimal.Decimal `json:"tmdb_popularity"`
 }
 
 func (q *Queries) CreateMovie(ctx context.Context, arg CreateMovieParams) (Movies, error) {
@@ -151,15 +152,15 @@ RETURNING movie_id, tmdb_id, imdb_id, title, overview, release_date, poster_path
 `
 
 type UpdateMovieParams struct {
-	MovieID        int32          `json:"movie_id"`
-	TmdbID         int32          `json:"tmdb_id"`
-	ImdbID         pgtype.Text    `json:"imdb_id"`
-	Title          string         `json:"title"`
-	Overview       pgtype.Text    `json:"overview"`
-	ReleaseDate    pgtype.Date    `json:"release_date"`
-	PosterPath     pgtype.Text    `json:"poster_path"`
-	BackdropPath   pgtype.Text    `json:"backdrop_path"`
-	TmdbPopularity pgtype.Numeric `json:"tmdb_popularity"`
+	MovieID        int32           `json:"movie_id"`
+	TmdbID         int32           `json:"tmdb_id"`
+	ImdbID         pgtype.Text     `json:"imdb_id"`
+	Title          string          `json:"title"`
+	Overview       pgtype.Text     `json:"overview"`
+	ReleaseDate    pgtype.Date     `json:"release_date"`
+	PosterPath     pgtype.Text     `json:"poster_path"`
+	BackdropPath   pgtype.Text     `json:"backdrop_path"`
+	TmdbPopularity decimal.Decimal `json:"tmdb_popularity"`
 }
 
 func (q *Queries) UpdateMovie(ctx context.Context, arg UpdateMovieParams) (Movies, error) {
