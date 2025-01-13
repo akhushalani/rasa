@@ -92,6 +92,29 @@ func (q *Queries) GetMovie(ctx context.Context, movieID int32) (Movies, error) {
 	return i, err
 }
 
+const getMovieByTmdbId = `-- name: GetMovieByTmdbId :one
+SELECT movie_id, tmdb_id, imdb_id, title, overview, release_date, poster_path, backdrop_path, tmdb_popularity, last_updated FROM movies
+WHERE tmdb_id = $1 LIMIT 1
+`
+
+func (q *Queries) GetMovieByTmdbId(ctx context.Context, tmdbID int32) (Movies, error) {
+	row := q.db.QueryRow(ctx, getMovieByTmdbId, tmdbID)
+	var i Movies
+	err := row.Scan(
+		&i.MovieID,
+		&i.TmdbID,
+		&i.ImdbID,
+		&i.Title,
+		&i.Overview,
+		&i.ReleaseDate,
+		&i.PosterPath,
+		&i.BackdropPath,
+		&i.TmdbPopularity,
+		&i.LastUpdated,
+	)
+	return i, err
+}
+
 const listMovies = `-- name: ListMovies :many
 SELECT movie_id, tmdb_id, imdb_id, title, overview, release_date, poster_path, backdrop_path, tmdb_popularity, last_updated FROM movies
 ORDER BY movie_id

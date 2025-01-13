@@ -50,6 +50,18 @@ func TestGetMovie(t *testing.T) {
 	require.Equal(t, movie.Title, fetchedMovie.Title)
 }
 
+func TestGetMovieByTmdbID(t *testing.T) {
+	movie := createRandomMovie(t)
+
+	fetchedMovie, err := testQueries.GetMovieByTmdbId(context.Background(), movie.TmdbID)
+	require.NoError(t, err)
+	require.NotEmpty(t, fetchedMovie)
+
+	require.Equal(t, movie.MovieID, fetchedMovie.MovieID)
+	require.Equal(t, movie.TmdbID, fetchedMovie.TmdbID)
+	require.Equal(t, movie.Title, fetchedMovie.Title)
+}
+
 func TestUpdateMovie(t *testing.T) {
 	movie := createRandomMovie(t)
 

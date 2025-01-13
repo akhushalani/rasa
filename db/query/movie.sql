@@ -10,6 +10,10 @@ RETURNING *;
 SELECT * FROM movies
 WHERE movie_id = $1 LIMIT 1;
 
+-- name: GetMovieByTmdbId :one
+SELECT * FROM movies
+WHERE tmdb_id = $1 LIMIT 1;
+
 -- name: ListMovies :many
 SELECT * FROM movies
 ORDER BY movie_id

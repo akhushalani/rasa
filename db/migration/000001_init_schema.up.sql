@@ -110,6 +110,7 @@ CREATE TABLE user_movies (
 );
 
 -- Indexes
+CREATE INDEX idx_users_name ON users(name);
 CREATE INDEX idx_movies_title ON movies(title);
 CREATE INDEX idx_movie_genres_movie_id ON movie_genres(movie_id);
 CREATE INDEX idx_movie_genres_genre_id ON movie_genres(genre_id);
